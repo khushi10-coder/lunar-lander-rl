@@ -1,0 +1,30 @@
+# Virtual environments
+.venv/
+lander-env/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled and cache directories
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+
+# Local temporary and backup files
+app_backup.py
+app_v2_backup.py
+st_out.log
+st_err.log
+
+# Video outputs
+videos/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini

@@ -1,0 +1,797 @@
+/* ==========================================================================
+   ROCKET LANDER AI - COSMIC ARCADE THEME STYLESHEET
+   Playful, game-inspired design with cosmic purple palette & glossy 3D UI
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root {
+  --bg-deep: #0d0926;
+  --bg-card: rgba(26, 17, 56, 0.82);
+  --bg-card-hover: rgba(38, 25, 80, 0.92);
+  --border-neon: rgba(162, 110, 255, 0.35);
+  --border-glow: rgba(199, 125, 255, 0.75);
+  --text-white: #f8f9fa;
+  --text-muted: #c7d2fe;
+  --arcade-orange: #ff7b00;
+  --arcade-yellow: #ffd166;
+  --arcade-cyan: #4cc9f0;
+  --arcade-green: #06d6a0;
+  --arcade-red: #ef476f;
+  --font-display: 'Fredoka', cursive, sans-serif;
+  --font-body: 'Nunito', sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   Global Background & Cosmic Starfield
+   -------------------------------------------------------------------------- */
+.stApp {
+  background-color: var(--bg-deep) !important;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(157, 2, 8, 0.18) 0%, transparent 40%),
+    radial-gradient(circle at 85% 20%, rgba(114, 9, 183, 0.28) 0%, transparent 45%),
+    radial-gradient(circle at 50% 70%, rgba(58, 12, 163, 0.2) 0%, transparent 50%),
+    radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #ffd166, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 90px 40px, #4cc9f0, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 230px 190px, #ff758f, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 310px 80px, #ffffff, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 350px 350px, 400px 400px, 320px 320px, 450px 450px, 380px 380px, 500px 500px;
+  color: var(--text-white) !important;
+  font-family: var(--font-body) !important;
+  overflow-x: hidden;
+}
+
+/* Ensure headings use Fredoka */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display) !important;
+  letter-spacing: 0.5px;
+}
+
+/* --------------------------------------------------------------------------
+   Floating Planet Decorations
+   -------------------------------------------------------------------------- */
+.space-decorations {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.45;
+}
+
+.planet {
+  position: absolute;
+  filter: drop-shadow(0 0 16px rgba(114, 9, 183, 0.4));
+  animation: floatPlanet 14s ease-in-out infinite alternate;
+}
+
+.planet-pink {
+  width: 80px;
+  height: 80px;
+  top: 30px;
+  left: 1%;
+  animation-duration: 12s;
+}
+
+.planet-ringed {
+  width: 110px;
+  height: 90px;
+  top: 40px;
+  right: 1.5%;
+  animation-duration: 16s;
+  animation-delay: -3s;
+}
+
+.moon-cyan {
+  width: 65px;
+  height: 65px;
+  bottom: 60px;
+  left: 1.5%;
+  animation-duration: 15s;
+  animation-delay: -6s;
+}
+
+.moon-grey {
+  width: 55px;
+  height: 55px;
+  bottom: 70px;
+  right: 2%;
+  animation-duration: 13s;
+  animation-delay: -2s;
+}
+
+@keyframes floatPlanet {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(3deg); }
+  100% { transform: translateY(6px) rotate(-3deg); }
+}
+
+/* --------------------------------------------------------------------------
+   Hero Game Logo Title & Header Banner
+   -------------------------------------------------------------------------- */
+.hero-container {
+  position: relative;
+  text-align: center;
+  padding: 2.2rem 1.2rem 1.4rem;
+  margin-bottom: 1.2rem;
+  background: radial-gradient(ellipse at 50% 30%, rgba(114, 9, 183, 0.35) 0%, rgba(13, 9, 38, 0.85) 75%);
+  border-radius: 24px;
+  border: 2px solid var(--border-neon);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(114, 9, 183, 0.25);
+  backdrop-filter: blur(12px);
+  z-index: 1;
+}
+
+.hero-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.hero-title {
+  margin: 0 !important;
+  font-family: var(--font-display) !important;
+  font-size: 3.4rem !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  letter-spacing: 2px;
+  transform: rotate(-1.5deg);
+  display: inline-block;
+}
+
+.hero-title-white {
+  color: #ffffff;
+  text-shadow: 
+    0 3px 0 #3a0ca3,
+    0 6px 0 #240046,
+    0 8px 18px rgba(0,0,0,0.8),
+    0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.hero-title-orange {
+  color: #ffb703;
+  background: linear-gradient(180deg, #ffe066 0%, #ff9e00 50%, #e85d04 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 0 #7209b7) drop-shadow(0 7px 0 #3a0ca3) drop-shadow(0 10px 18px rgba(0,0,0,0.8));
+}
+
+.hero-rocket-svg {
+  width: 78px;
+  height: 78px;
+  animation: floatRocket 3.5s ease-in-out infinite;
+  filter: drop-shadow(0 8px 16px rgba(255, 107, 107, 0.45));
+}
+
+@keyframes floatRocket {
+  0% { transform: translateY(0px) rotate(-6deg); }
+  50% { transform: translateY(-14px) rotate(4deg); }
+  100% { transform: translateY(0px) rotate(-6deg); }
+}
+
+.rocket-flame {
+  animation: pulseFlame 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes pulseFlame {
+  0% { transform: scaleY(0.9) scaleX(0.95); opacity: 0.85; }
+  100% { transform: scaleY(1.15) scaleX(1.05); opacity: 1; }
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+  margin-bottom: 0.8rem;
+}
+
+.hero-badges-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.game-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: rgba(43, 27, 94, 0.8);
+  border: 1.5px solid rgba(162, 110, 255, 0.5);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  color: #ffffff;
+}
+
+.badge-cyan { border-color: #4cc9f0; color: #4cc9f0; }
+.badge-yellow { border-color: #ffd166; color: #ffd166; }
+.badge-red { border-color: #ef476f; color: #ef476f; }
+.badge-green { border-color: #06d6a0; color: #06d6a0; }
+
+/* --------------------------------------------------------------------------
+   "Start Here" 3-Step Strip
+   -------------------------------------------------------------------------- */
+.start-here-container {
+  background: rgba(30, 18, 68, 0.85);
+  border: 2px solid var(--border-neon);
+  border-radius: 18px;
+  padding: 1rem 1.4rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  text-align: center;
+}
+
+.start-steps-row {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+
+.start-step-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.start-step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ff9e00 0%, #e85d04 100%);
+  color: #1a0826;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px rgba(255, 158, 0, 0.5);
+}
+
+.start-here-tagline {
+  color: #c7d2fe;
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* --------------------------------------------------------------------------
+   Streamlit Tabs Styling
+   -------------------------------------------------------------------------- */
+.stTabs [data-baseweb="tab-list"] {
+  gap: 0.75rem;
+  background: rgba(22, 13, 50, 0.7);
+  padding: 0.5rem;
+  border-radius: 18px;
+  border: 1.5px solid var(--border-neon);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.stTabs [data-baseweb="tab"] {
+  height: 50px;
+  border-radius: 12px;
+  color: #c7d2fe !important;
+  font-family: var(--font-display) !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  padding: 0 1.35rem;
+  background: transparent;
+  border: none !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stTabs [data-baseweb="tab"]:hover {
+  color: #ffffff !important;
+  background: rgba(114, 9, 183, 0.3);
+  transform: translateY(-2px);
+}
+
+.stTabs [aria-selected="true"] {
+  background: linear-gradient(180deg, #7209b7 0%, #480ca8 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(114, 9, 183, 0.5), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+  border-radius: 12px !important;
+}
+
+/* --------------------------------------------------------------------------
+   Game Button Styling (Giant LAUNCH button)
+   -------------------------------------------------------------------------- */
+.launch-button-container .stButton > button,
+.stButton > button[kind="primary"] {
+  background: linear-gradient(180deg, #ffc300 0%, #ff9500 50%, #e85d04 100%) !important;
+  color: #1a0826 !important;
+  font-family: var(--font-display) !important;
+  font-size: 1.45rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: 3px solid #ffe480 !important;
+  border-radius: 18px !important;
+  padding: 0.85rem 2.2rem !important;
+  box-shadow: 0 7px 0 #9d0208, 0 14px 26px rgba(255, 149, 0, 0.5) !important;
+  transition: all 0.1s ease-in-out !important;
+  cursor: pointer !important;
+}
+
+.launch-button-container .stButton > button:hover,
+.stButton > button[kind="primary"]:hover {
+  background: linear-gradient(180deg, #ffd000 0%, #ffa200 50%, #f46a04 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 9px 0 #9d0208, 0 18px 30px rgba(255, 149, 0, 0.6) !important;
+}
+
+.launch-button-container .stButton > button:active,
+.stButton > button[kind="primary"]:active {
+  transform: translateY(6px) !important;
+  box-shadow: 0 1px 0 #9d0208, 0 4px 10px rgba(255, 149, 0, 0.3) !important;
+}
+
+/* Secondary Buttons */
+.stButton > button:not([kind="primary"]) {
+  background: linear-gradient(180deg, #4cc9f0 0%, #4361ee 100%) !important;
+  color: #ffffff !important;
+  font-family: var(--font-display) !important;
+  font-weight: 600 !important;
+  font-size: 1.05rem !important;
+  border: 1.5px solid #80e5ff !important;
+  border-radius: 14px !important;
+  box-shadow: 0 5px 0 #2b2d70, 0 8px 16px rgba(67, 97, 238, 0.35) !important;
+  transition: all 0.1s ease !important;
+}
+
+/* --------------------------------------------------------------------------
+   Cards, Panels & Containers
+   -------------------------------------------------------------------------- */
+.game-panel {
+  background: var(--bg-card);
+  border: 2px solid var(--border-neon);
+  border-radius: 20px;
+  padding: 1.4rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  margin-bottom: 1.2rem;
+}
+
+/* Pilot Card */
+.variant-card {
+  background: rgba(30, 20, 68, 0.8);
+  border: 2px solid rgba(138, 79, 255, 0.3);
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.variant-card.selected {
+  border-color: var(--arcade-yellow);
+  background: rgba(58, 28, 114, 0.9);
+  box-shadow: 0 0 18px rgba(255, 209, 102, 0.45), inset 0 0 12px rgba(255, 209, 102, 0.15);
+}
+
+.variant-card.warning-variant {
+  border-left: 6px solid var(--arcade-red) !important;
+}
+
+.variant-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+}
+
+.variant-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.variant-desc {
+  font-size: 0.95rem;
+  color: #ffffff;
+  line-height: 1.4;
+  margin: 0 0 0.3rem 0;
+  font-weight: 600;
+}
+
+.variant-old-name {
+  font-size: 0.8rem;
+  color: #9aa5ce;
+  font-style: italic;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Outcome Badges & Metrics
+   -------------------------------------------------------------------------- */
+.outcome-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.6rem;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.8rem;
+  animation: badgePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes badgePop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.outcome-landed {
+  background: linear-gradient(180deg, #06d6a0 0%, #048a67 100%);
+  color: #ffffff;
+  border: 2px solid #70f4d0;
+  box-shadow: 0 0 24px rgba(6, 214, 160, 0.6), 0 6px 0 #02503c;
+}
+
+.outcome-crashed {
+  background: linear-gradient(180deg, #ef476f 0%, #b5173f 100%);
+  color: #ffffff;
+  border: 2px solid #ff9ebb;
+  box-shadow: 0 0 24px rgba(239, 71, 111, 0.6), 0 6px 0 #730623;
+}
+
+.outcome-hovering {
+  background: linear-gradient(180deg, #ff9e00 0%, #d46300 100%);
+  color: #ffffff;
+  border: 2px solid #ffd166;
+  box-shadow: 0 0 24px rgba(255, 158, 0, 0.6), 0 6px 0 #8a3f00;
+}
+
+.beginner-result-box {
+  background: rgba(22, 13, 50, 0.9);
+  border: 2px solid var(--border-neon);
+  border-radius: 16px;
+  padding: 0.9rem 1.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+/* Score counter box with gold star */
+.score-counter-card {
+  background: rgba(22, 13, 50, 0.85);
+  border: 2px solid rgba(255, 209, 102, 0.4);
+  border-radius: 18px;
+  padding: 0.9rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.score-digits {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #ffd166;
+  line-height: 1.1;
+  text-shadow: 0 2px 8px rgba(255, 209, 102, 0.5);
+}
+
+.score-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  font-weight: 800;
+}
+
+/* Fuel gauge meter */
+.fuel-meter-container {
+  background: rgba(22, 13, 50, 0.85);
+  border: 2px solid rgba(76, 201, 240, 0.4);
+  border-radius: 18px;
+  padding: 0.9rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.4rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.fuel-meter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fuel-track {
+  width: 100%;
+  height: 12px;
+  background: rgba(13, 9, 38, 0.9);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(76, 201, 240, 0.3);
+}
+
+.fuel-bar {
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #06d6a0 0%, #4cc9f0 70%, #ff9e00 100%);
+  transition: width 0.5s ease;
+}
+
+/* --------------------------------------------------------------------------
+   Mission Race Lanes
+   -------------------------------------------------------------------------- */
+.race-lane {
+  background: rgba(24, 15, 52, 0.85);
+  border: 2px solid var(--border-neon);
+  border-radius: 18px;
+  padding: 0.9rem;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.race-lane:hover {
+  transform: translateY(-4px);
+}
+
+.race-lane-header {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   Scoreboard Horizontal Bar Chart
+   -------------------------------------------------------------------------- */
+.scoreboard-container {
+  background: rgba(22, 13, 50, 0.85);
+  border: 2px solid var(--border-neon);
+  border-radius: 20px;
+  padding: 2.5rem 1.6rem 1.6rem;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  margin-top: 1rem;
+  min-height: 220px;
+}
+
+.solved-line {
+  position: absolute;
+  top: 1rem;
+  bottom: 1.2rem;
+  width: 2px;
+  border-left: 2px dashed #06d6a0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.solved-label {
+  position: absolute;
+  top: -1.4rem;
+  transform: translateX(-50%);
+  background: #06d6a0;
+  color: #0d0926;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.score-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1.4rem;
+  position: relative;
+}
+
+.score-bar-label {
+  width: 150px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.score-bar-track {
+  flex-grow: 1;
+  height: 28px;
+  background: rgba(13, 9, 38, 0.8);
+  border-radius: 14px;
+  border: 1px solid rgba(138, 79, 255, 0.3);
+  position: relative;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+}
+
+.score-bar-fill {
+  height: 100%;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 4px;
+  position: relative;
+  animation: fillBar 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes fillBar {
+  0% { width: 0% !important; }
+}
+
+.score-bar-rocket {
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+}
+
+.score-bar-value {
+  width: 150px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffd166;
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Mission Briefing Cards
+   -------------------------------------------------------------------------- */
+.step-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin-bottom: 1.6rem;
+}
+
+.step-card {
+  background: rgba(28, 17, 60, 0.85);
+  border: 2px solid var(--border-neon);
+  border-radius: 18px;
+  padding: 1.4rem;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+
+.step-number {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #7209b7 0%, #3a0ca3 100%);
+  border: 2px solid #c77dff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 4px 10px rgba(114, 9, 183, 0.5);
+}
+
+.story-card {
+  background: rgba(30, 15, 60, 0.9);
+  border: 2px solid rgba(239, 71, 111, 0.5);
+  border-radius: 20px;
+  padding: 1.6rem;
+  box-shadow: 0 8px 25px rgba(239, 71, 111, 0.2);
+}
+
+.fix-box {
+  background: rgba(6, 214, 160, 0.12);
+  border: 2px solid rgba(6, 214, 160, 0.5);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  margin-top: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+.arcade-footer {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+  margin-top: 2.5rem;
+  border-top: 1px solid rgba(138, 79, 255, 0.25);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.arcade-footer a {
+  color: var(--arcade-cyan) !important;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.arcade-footer a:hover {
+  color: var(--arcade-yellow) !important;
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Media Queries
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.3rem !important;
+  }
+  .hero-rocket-svg {
+    width: 56px;
+    height: 56px;
+  }
+  .start-steps-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .step-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .score-bar-label {
+    width: 110px;
+    font-size: 0.9rem;
+  }
+  .score-bar-value {
+    width: 100px;
+    font-size: 0.95rem;
+  }
+  .planet {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Accessibility: Reduced Motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .planet,
+  .hero-rocket-svg,
+  .rocket-flame,
+  .score-bar-fill,
+  .outcome-badge {
+    animation: none !important;
+    transition: none !important;
+  }
+}
