@@ -1,155 +1,156 @@
-# Rocket Lander AI
+# 🚀 Rocket Lander AI
 
-I trained AI pilots with reinforcement learning to land a simulated rocket, and showed how changing the point rules makes the AI either land properly or learn to cheat.
+> **An AI-powered lunar landing simulator where four reinforcement learning agents compete to master the perfect touchdown — or discover how to cheat the scoring system!**
 
-Live demo: coming soon
+![Python](https://img.shields.io/badge/Language-Python-blue?logo=python)
+![RL](https://img.shields.io/badge/AI-Reinforcement%20Learning-orange)
+![PPO](https://img.shields.io/badge/Algorithm-PPO-green)
+![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-red)
 
----
-
-## What It Is
-
-This project teaches a computer to pilot a rocket to a safe lunar touchdown. No human programmer wrote rules on how to fire the engines or balance against gravity. Instead, the AI practiced over a million times in a physics simulator, discovering how to fly entirely on its own by collecting points. An interactive space-themed web dashboard lets you launch the pilots, test different landing spots, and compare their behaviors side by side.
-
----
-
-## The Four Pilots
-
-Each pilot was trained with a different scoring rule to explore how point systems shape AI behavior:
-
-| Pilot | Original Name | How It Earns Points |
-| :--- | :--- | :--- |
-| **🎯 Standard Pilot** | `baseline` | Learns with the game's normal points: rewarded for landing softly between the flags, penalized for crashing. |
-| **⚡ Hurry-Up Pilot** | `time` | Loses a tiny fraction of a point every second, learning that wasting time costs fuel. |
-| **⚠️ Cheater Pilot** | `hover` | Receives +1 point every second it stays upright and slow in mid-air, learning to float instead of land. |
-| **🚀 Smart Pilot** | `fixed` | Only receives points for getting closer to the pad, so hovering stops paying and safe landing is restored. |
+**🎮 Live Demo:** Coming Soon!
 
 ---
 
-## Tournament Results
+## 🎯 Project Objective
 
-These scores are the average points earned over 20 test landings with custom bonuses switched off:
+Train AI pilots to land a simulated rocket safely using **Reinforcement Learning (PPO)**.
 
-| Pilot | Original Name | Average Score | Flight Outcome |
-| :--- | :--- | :---: | :--- |
-| **⚡ Hurry-Up Pilot** | `time` | **243.3** | Clean, fast touchdown |
-| **🚀 Smart Pilot** | `fixed` | **240.6** | Gentle, highly stable landing |
-| **🎯 Standard Pilot** | `baseline` | **219.2** | Reliable touchdown |
-| **⚠️ Cheater Pilot** | `hover` | **-12.0** | Floats in mid-air until time runs out |
+Instead of programming flight instructions, the AI learns through trial and error, receiving rewards and penalties for its actions.
 
-> **Note:** Each pilot was trained once (one seed), so small differences between pilots may be luck. The Cheater Pilot's low score clearly shows it never lands. 200 or more counts as a good landing.
+The interesting experiment? Changing the reward rules changes how the AI behaves — sometimes it even learns to cheat!
 
 ---
 
-## Key Idea: Reward Hacking
+## 👨‍🚀 Meet the Four Pilots
 
-When we gave the Cheater Pilot bonus points for floating upright and slow, it discovered that landing ended the round and stopped the payments. Floating in mid-air earned endless safe points without any danger of crashing into the ground, so the AI chose to cheat rather than land. We fixed this by rewarding improvement toward the pad rather than static hovering, forcing the AI to make a prompt, gentle landing.
+| Pilot | Personality | Learning Strategy |
+|---|---|---|
+| 🎯 Standard Pilot | The Responsible One | Learns using the game's original rewards. |
+| ⚡ Hurry-Up Pilot | The Speedrunner | Learns to land quickly by receiving time penalties. |
+| 😈 Cheater Pilot | The Rule Exploiter | Learns to hover instead of landing to collect bonus points. |
+| 🚀 Smart Pilot | The Problem Solver | Learns to move closer to the landing pad instead of hovering. |
 
 ---
 
-## How to Run It
+## 🏆 Tournament Results
 
-Python 3.10 to 3.12 works best on Windows, macOS, and Linux.
+Average scores across 20 test flights:
 
-### 1. Clone the repository and navigate into the folder
+| Pilot | Average Score | Outcome |
+|---|---:|---|
+| ⚡ Hurry-Up | **243.3** | Fast touchdown |
+| 🚀 Smart | **240.6** | Stable landing |
+| 🎯 Standard | **219.2** | Successful landing |
+| 😈 Cheater | **-12.0** | Never lands! |
+
+> Scores of 200+ count as a good landing. Each pilot was trained using one random seed, so results are experimental rather than statistically conclusive.
+
+---
+
+## 🧠 The Interesting Part: Reward Hacking
+
+I gave one AI bonus points for hovering upright and slowly in the air.
+
+Instead of landing, it discovered that hovering continuously earned more rewards!
+
+This is called **Reward Hacking** — when an AI exploits the reward system instead of achieving the intended goal.
+
+I redesigned the reward function to encourage progress towards the landing pad, creating the Smart Pilot.
+
+**Lesson learned:** AI learns what you reward, not necessarily what you intend.
+
+---
+
+## ⚙️ Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| Python | Core programming |
+| Gymnasium & Box2D | Lunar physics simulation |
+| Stable-Baselines3 (PPO) | Reinforcement Learning |
+| PyTorch | Neural network framework |
+| Streamlit | Interactive web dashboard |
+
+---
+
+## 💻 How to Run
+
+**1. Clone the repository**
+
 ```bash
 git clone https://github.com/khushi10-coder/lunar-lander-rl.git
 cd lunar-lander-rl
 ```
 
-### 2. Create and activate a virtual environment
-* **Windows (PowerShell):**
-  ```powershell
-  python -m venv .venv
-  .\.venv\Scripts\activate
-  ```
-* **macOS / Linux:**
-  ```bash
-  python3 -m venv .venv
-  source .venv/bin/activate
-  ```
+**2. Create a virtual environment**
 
-### 3. Install dependencies
+```bash
+python -m venv .venv
+```
+
+**3. Activate it**
+
+Windows:
+```powershell
+.\.venv\Scripts\activate
+```
+
+macOS / Linux:
+```bash
+source .venv/bin/activate
+```
+
+**4. Install dependencies**
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Launch the web dashboard
+**5. Launch the dashboard**
+
 ```bash
 python -m streamlit run app.py
 ```
-Open [http://localhost:8501](http://localhost:8501) in your browser to launch rockets and test the pilots.
+
+Open `http://localhost:8501` and start your lunar mission! 🌙
 
 ---
 
-## How I Trained It
+## 🧪 Train Your Own Pilot
 
-If you want to train your own pilots or run benchmarks from the terminal:
+```bash
+python src/train.py --variant fixed --steps 1000000 --seed 0
+```
 
-* **Train a pilot:**
-  ```bash
-  python src/train.py --variant fixed --steps 1000000 --seed 0
-  ```
-  *(Options for `--variant`: `baseline`, `time`, `hover`, `fixed`)*
+Available variants: `baseline`, `time`, `hover`, `fixed`.
 
-* **Evaluate saved models across 20 flights:**
-  ```bash
-  python src/evaluate.py
-  ```
+**Evaluate all pilots:**
 
-* **Export evaluation scores to `web/results.json`:**
-  ```bash
-  python src/export_results.py
-  ```
-
-* **Record video clips of a trained pilot:**
-  ```bash
-  python src/record.py --model models/fixed_seed0.zip --out videos/fixed
-  ```
-
----
-
-## Project Structure
-
-```text
-lunar-lander-rl/
-├── .streamlit/
-│   └── config.toml          # Cosmic dark purple theme configuration
-├── assets/
-│   ├── style.css            # Custom CSS for the arcade space theme
-│   └── svgs.py              # Inline SVG artwork (rocket, planets, gold star)
-├── models/
-│   ├── baseline_seed0.zip   # Trained model: Standard Pilot
-│   ├── fixed_seed0.zip      # Trained model: Smart Pilot
-│   ├── hover_seed0.zip      # Trained model: Cheater Pilot
-│   └── time_seed0.zip       # Trained model: Hurry-Up Pilot
-├── src/
-│   ├── evaluate.py          # Benchmark all saved models on 20 episodes
-│   ├── export_results.py    # Compute and save mean scores to web/results.json
-│   ├── record.py            # Record episode replay MP4 videos
-│   ├── train.py             # Train PPO agent on any reward variant
-│   ├── watch_random.py      # Watch an untrained agent for comparison
-│   └── wrappers.py          # Gymnasium reward shaping environment wrappers
-├── web/
-│   └── results.json         # Benchmark tournament results loaded by the app
-├── .gitignore               # Ignores virtual envs, videos, and cache files
-├── app.py                   # Main Streamlit web application
-├── packages.txt             # Linux system dependencies (swig) for cloud deploy
-├── README.md                # Project documentation and guide
-└── requirements.txt         # Pinned Python package dependencies
+```bash
+python src/evaluate.py
 ```
 
 ---
 
-## Tech Used
+## 💡 What I Learned
 
-* **Python** — Core language
-* **Gymnasium & Box2D** — Physics simulation environment (`LunarLander-v3`)
-* **Stable-Baselines3 (PPO)** — Proximal Policy Optimization reinforcement learning algorithm
-* **PyTorch** — Deep learning framework backing the policy network
-* **Streamlit** — Interactive frontend dashboard
+- Reinforcement Learning and PPO.
+- Reward shaping and policy optimization.
+- AI behavior through trial and error.
+- Reward hacking and unintended AI behavior.
+- Model evaluation and performance comparison.
+- Building interactive AI dashboards.
 
 ---
 
-## Author
+## 👩‍🚀 Author
 
-* **khushi10-coder** — [GitHub Profile](https://github.com/khushi10-coder)
+**Khushi Nanekar** — [GitHub Profile](https://github.com/khushi10-coder)
+
+---
+
+<p align="center">
+  <b>🚀 Four pilots. One moon. One unexpected cheater.</b>
+  <br/>
+  <i>Sometimes AI doesn't break the rules. It finds loopholes in them.</i>
+</p>
