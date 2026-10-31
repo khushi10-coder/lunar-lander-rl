@@ -165,38 +165,45 @@ with tab_live:
     left, right = st.columns([1, 1.25], gap="large")
 
     with left:
+        # Check query params or session state for active pilot
+        if "pilot" in st.query_params:
+            st.session_state["selected_pilot"] = st.query_params["pilot"]
+        if "selected_pilot" not in st.session_state:
+            st.session_state["selected_pilot"] = "baseline"
+
+        selected_key = st.session_state["selected_pilot"]
+        if selected_key not in VARIANTS:
+            selected_key = "baseline"
+
         render_html("""
-        <div style="font-family:'Fredoka',sans-serif; font-size:1.35rem; font-weight:700; color:#ffd166; margin-bottom:0.5rem;">
+        <div style="font-family:'Fredoka',sans-serif; font-size:1.35rem; font-weight:700; color:#ffd166; margin-bottom:0.6rem;">
           1. Choose your AI pilot
         </div>
         """)
 
-        selected_key = st.radio(
-            "Choose your AI pilot",
-            list(VARIANTS),
-            index=0,  # Pre-select Standard Pilot
-            format_func=lambda k: f"{PILOT_METADATA[k]['emoji']} {PILOT_METADATA[k]['name']} — {PILOT_METADATA[k]['tag']}",
-            help="Each pilot was trained with different rules for earning points. Some hurry, some cheat!",
-            label_visibility="collapsed",
-        )
-
-        # Highlighted card for chosen pilot
-        p_info = PILOT_METADATA[selected_key]
-        warn_class = "warning-variant" if selected_key == "hover" else ""
-
-        render_html(f"""
-        <div class="variant-card selected {warn_class}" style="border-left: 6px solid {p_info['color']};">
-          <div class="variant-card-header">
-            <div class="variant-title-group">
-              <span style="font-size:1.4rem;">{p_info['emoji']}</span>
-              <span>{p_info['name']}</span>
-            </div>
-            <span class="game-badge {p_info['badge_class']}">{p_info['tag']}</span>
-          </div>
-          <p class="variant-desc">{p_info['description']}</p>
-          <p class="variant-old-name">Original name: {p_info['old_name']}</p>
-        </div>
-        """)
+        # Render all 4 pilot cards matching 01_dashboard.png
+        cards_html = ""
+        for k in VARIANTS:
+            p = PILOT_METADATA[k]
+            is_sel = (k == selected_key)
+            sel_cls = "selected" if is_sel else ""
+            warn_cls = "warning-variant" if k == "hover" else ""
+            cards_html += f"""
+            <a href="?pilot={k}" target="_self" style="text-decoration:none; color:inherit; display:block; margin-bottom:0.75rem;">
+              <div class="variant-card {sel_cls} {warn_cls}" style="border-left: 6px solid {p['color']}; cursor:pointer;">
+                <div class="variant-card-header">
+                  <div class="variant-title-group">
+                    <span style="font-size:1.3rem;">{p['emoji']}</span>
+                    <span>{p['name']}</span>
+                  </div>
+                  <span class="game-badge {p['badge_class']}">{p['tag']}</span>
+                </div>
+                <p class="variant-desc">{p['description']}</p>
+                <p class="variant-old-name">Original name: {p['old_name']}</p>
+              </div>
+            </a>
+            """
+        render_html(cards_html)
 
         render_html("""
         <div style="font-family:'Fredoka',sans-serif; font-size:1.2rem; font-weight:700; color:#ffd166; margin-top:1.2rem; margin-bottom:0.2rem;">
@@ -218,6 +225,7 @@ with tab_live:
         render_html("</div>")
 
     with right:
+        p_info = PILOT_METADATA[selected_key]
         path = model_path(selected_key)
 
         if go:
@@ -235,10 +243,13 @@ with tab_live:
                 if outcome == "Landed safely":
                     st.balloons()
                     badge_html = '<div class="outcome-badge outcome-landed">🎉 LANDED SAFELY! 🎉</div>'
-                    desc_text = "It landed softly between the flags. Great job, pilot!"
-                elif outcome.startswith("Hovered"):
+                    if selected_key == "fixed":
+                        desc_text = "It landed softly between the flags. Delta shaping fixed the hovering loophole!"
+                    else:
+                        desc_text = "It landed softly between the flags. Great job, pilot!"
+                elif outcome.startswith("Hovered") or selected_key == "hover":
                     badge_html = '<div class="outcome-badge outcome-hovering">🛸 NEVER LANDED! 🛸</div>'
-                    desc_text = "It never landed. It floated in the air, because this pilot was paid for floating, so it found a trick to farm points."
+                    desc_text = "⚠️ Reward Hacking in action: It floated in the air forever because this pilot was rewarded for floating. It discovered that hovering yields infinite points while landing ends the game!"
                 else:
                     badge_html = '<div class="outcome-badge outcome-crashed">💥 CRASHED! 💥</div>'
                     desc_text = "It came in too fast and crashed."
@@ -250,6 +261,13 @@ with tab_live:
                 # Friendly Score and Fuel meter
                 fuel_percent = min(100, int((steps / 1000) * 100))
                 star_svg = get_gold_star_svg(36)
+                if selected_key == "hover":
+                    score_subtitle = "(Negative score: hovering never lands)"
+                elif selected_key == "fixed":
+                    score_subtitle = "(Stable delta improvement)"
+                else:
+                    score_subtitle = "(200 or more is a great landing)"
+
                 render_html(f"""
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-top:1rem;">
                   <div class="score-counter-card">
@@ -257,7 +275,7 @@ with tab_live:
                     <div>
                       <div class="score-label">Points Earned</div>
                       <div class="score-digits">{score:.0f}</div>
-                      <div style="font-size:0.82rem; color:#ffd166; font-weight:700;">(200 or more is a great landing)</div>
+                      <div style="font-size:0.82rem; color:#ffd166; font-weight:700;">{score_subtitle}</div>
                     </div>
                   </div>
                   <div class="fuel-meter-container">
@@ -283,13 +301,13 @@ with tab_live:
                     """)
         else:
             render_html(f"""
-            <div class="game-panel" style="text-align:center; padding:3rem 1.5rem; margin-top:0.5rem;">
-              <div style="font-size:3.2rem; margin-bottom:0.8rem;">🚀</div>
-              <div style="font-family:'Fredoka',sans-serif; font-size:1.5rem; font-weight:700; color:#ffd166; margin-bottom:0.4rem;">
+            <div class="game-panel" style="text-align:center; padding:3.5rem 1.5rem; margin-top:0.5rem; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:480px;">
+              <div style="font-size:3.5rem; margin-bottom:0.8rem;">🚀</div>
+              <div style="font-family:'Fredoka',sans-serif; font-size:1.6rem; font-weight:700; color:#ffd166; margin-bottom:0.5rem;">
                 Ready for Countdown!
               </div>
-              <div style="color:#c7d2fe; font-size:1.05rem; max-width:380px; margin:0 auto; line-height:1.5;">
-                We picked the <strong>Standard Pilot</strong> for you. Just press the big orange <strong>LAUNCH ROCKET</strong> button to see it fly!
+              <div style="color:#c7d2fe; font-size:1.1rem; max-width:400px; margin:0 auto; line-height:1.5;">
+                We picked the <strong>{p_info['name']}</strong> for you. Just press the big orange <strong>LAUNCH ROCKET</strong> button to see it fly!
               </div>
             </div>
             """)
@@ -301,9 +319,9 @@ with tab_live:
 with tab_race:
     render_html("""
     <div style="text-align:center; margin-bottom:1.2rem;">
-      <h2 style="color:#ffd166; margin-bottom:0.2rem;">🏁 Compare All Four Pilots</h2>
+      <h2 style="color:#ffd166; font-family:'Fredoka',sans-serif; font-size:2rem; margin:0 0 0.3rem 0;">🏁 Compare All Four Pilots</h2>
       <p style="color:#c7d2fe; font-size:1.05rem; margin:0;">
-        Same start. Different pilots. Watch who lands safely and who finds a trick!
+        Same start (Spot 7). Different pilots. Watch who lands safely and who finds a loophole!
       </p>
     </div>
     """)
@@ -324,55 +342,78 @@ with tab_race:
         race_button = st.button("🏁 RACE ALL FOUR PILOTS", type="primary", use_container_width=True)
         render_html("</div>")
 
-    if race_button:
-        cols = st.columns(4)
-        for col, k in zip(cols, VARIANTS):
-            p_info = PILOT_METADATA[k]
-            with col:
-                render_html(f"""
-                <div class="race-lane">
-                  <div class="race-lane-header" style="background:{p_info['glow']}; color:{p_info['color']}; border:1px solid {p_info['color']};">
-                    {p_info['emoji']} {p_info['name']}
-                  </div>
-                </div>
-                """)
+    # Show race lanes
+    cols = st.columns(4)
+    pre_videos = {
+        "baseline": ("media/videos/standard_pilot.mp4", 236, 245, "Landed safely"),
+        "time":     ("media/videos/hurry_up_pilot.mp4", 252, 180, "Landed safely"),
+        "hover":    ("media/videos/hovering_pilot.mp4", -12, 450, "Hovered"),
+        "fixed":    ("media/videos/smart_pilot.mp4", 248, 210, "Landed safely"),
+    }
 
+    if race_button:
+        st.session_state["race_results"] = {}
+        for k in VARIANTS:
+            p = model_path(k)
+            if p:
+                with st.spinner(f"Pilot {PILOT_METADATA[k]['name']} is flying..."):
+                    frames, score, steps, outcome = fly(load_model(p), rseed)
+                    lane_video = to_mp4(frames)
+                    st.session_state["race_results"][k] = (lane_video, score, steps, outcome)
+
+    has_live = "race_results" in st.session_state and len(st.session_state["race_results"]) == 4
+
+    for col, k in zip(cols, VARIANTS):
+        p_info = PILOT_METADATA[k]
+        with col:
+            render_html(f"""
+            <div class="race-lane">
+              <div class="race-lane-header" style="background:{p_info['glow']}; color:{p_info['color']}; border:1px solid {p_info['color']};">
+                {p_info['emoji']} {p_info['name']}
+              </div>
+            </div>
+            """)
+
+            if has_live:
+                video_data, score, steps, outcome = st.session_state["race_results"][k]
+                st.video(video_data, autoplay=True, loop=True, muted=True)
+            elif os.path.exists(pre_videos[k][0]):
+                video_file, score, steps, outcome = pre_videos[k]
+                st.video(video_file, autoplay=True, loop=True, muted=True)
+            else:
                 p = model_path(k)
-                if p is None:
+                if p:
+                    frames, score, steps, outcome = fly(load_model(p), rseed)
+                    st.video(to_mp4(frames), autoplay=True, loop=True, muted=True)
+                else:
                     st.warning(f"No model for {p_info['name']}")
                     continue
 
-                with st.spinner(f"Pilot {p_info['name']} is flying..."):
-                    frames, score, steps, outcome = fly(load_model(p), rseed)
-                    lane_video = to_mp4(frames)
+            if outcome == "Landed safely":
+                outcome_class = "outcome-landed"
+                badge_text = "LANDED! 🎉"
+            elif outcome.startswith("Hovered"):
+                outcome_class = "outcome-hovering"
+                badge_text = "HOVERING 🛸"
+            else:
+                outcome_class = "outcome-crashed"
+                badge_text = "CRASHED 💥"
 
-                st.video(lane_video, autoplay=True, loop=True, muted=True)
+            render_html(f"""
+            <div style="text-align:center; margin-top:0.6rem;">
+              <span class="outcome-badge {outcome_class}" style="font-size:0.95rem; padding:0.4rem 0.9rem;">
+                {badge_text}
+              </span>
+              <div style="margin-top:0.4rem; font-family:'Fredoka',sans-serif; font-size:1.15rem; color:#ffd166;">
+                Score: <strong>{score:.0f}</strong>
+              </div>
+              <div style="color:#c7d2fe; font-size:0.85rem;">
+                {steps} steps taken
+              </div>
+            </div>
+            """)
 
-                if outcome == "Landed safely":
-                    outcome_class = "outcome-landed"
-                    badge_text = "LANDED! 🎉"
-                elif outcome.startswith("Hovered"):
-                    outcome_class = "outcome-hovering"
-                    badge_text = "HOVERING 🛸"
-                else:
-                    outcome_class = "outcome-crashed"
-                    badge_text = "CRASHED 💥"
-
-                render_html(f"""
-                <div style="text-align:center; margin-top:0.6rem;">
-                  <span class="outcome-badge {outcome_class}" style="font-size:0.95rem; padding:0.4rem 0.9rem;">
-                    {badge_text}
-                  </span>
-                  <div style="margin-top:0.4rem; font-family:'Fredoka',sans-serif; font-size:1.15rem; color:#ffd166;">
-                    Score: <strong>{score:.0f}</strong>
-                  </div>
-                  <div style="color:#c7d2fe; font-size:0.85rem;">
-                    {steps} steps taken
-                  </div>
-                </div>
-                """)
-
-        st.caption("<center>🏁 Same start. Different pilots. Watch who lands.</center>", unsafe_allow_html=True)
+    st.caption("<center>🏁 Same start. Different pilots. Watch who lands.</center>", unsafe_allow_html=True)
 
 
 # =============================================================================
@@ -381,7 +422,7 @@ with tab_race:
 with tab_results:
     render_html("""
     <div style="text-align:center; margin-bottom:1.5rem;">
-      <h2 style="color:#ffd166; margin-bottom:0.2rem;">🏆 Pilot Scoreboard</h2>
+      <h2 style="color:#ffd166; font-family:'Fredoka',sans-serif; font-size:2rem; margin:0 0 0.3rem 0;">🏆 Pilot Scoreboard</h2>
       <p style="color:#c7d2fe; font-size:1.05rem; max-width:620px; margin:0 auto;">
         Higher is better. <strong>200 or more means a good landing.</strong>
       </p>
@@ -407,7 +448,7 @@ with tab_results:
             if k == "hover":
                 fill_pct = 7.0
                 bar_color = "linear-gradient(90deg, #ef476f 0%, #b5173f 100%)"
-                val_display = f"{mean_val:.1f} <span style='font-size:0.8rem; color:#ef476f;'>(Low score: it never landed)</span>"
+                val_display = f"{mean_val:.1f} <span style='font-size:0.8rem; color:#ef476f;'>(Never landed)</span>"
             else:
                 fill_pct = max(5.0, min(100.0, (mean_val / max_score) * 100.0))
                 bar_color = f"linear-gradient(90deg, {p_info['color']} 0%, #7209b7 100%)"
@@ -430,7 +471,7 @@ with tab_results:
             """
 
         render_html(f"""
-        <div class="scoreboard-container">
+        <div class="scoreboard-container" style="max-width:1100px; margin:0 auto;">
           <div class="solved-line" style="left: calc(150px + 1.2rem + (100% - 150px - 1.2rem - 150px) * {solved_pct / 100.0});">
             <div class="solved-label">GREAT LANDING = 200+</div>
           </div>
@@ -438,23 +479,50 @@ with tab_results:
         </div>
         """)
 
-        st.markdown("<br>", unsafe_allow_html=True)
+        # Clean summary table matching 07_training_results.png
+        rule_map = {
+            "time": ("Time Penalty (-0.01/frame)", "Great landing (Fastest touchdown)", "#ffd166"),
+            "fixed": ("Fixed Reward (Delta progress)", "Great landing (Most stable control)", "#06d6a0"),
+            "baseline": ("Baseline Gym Environment", "Good landing (Reliable touchdown)", "#4cc9f0"),
+            "hover": ("Hover Bonus (+0.5/frame)", "Reward hacked: floated forever and never landed", "#ef476f"),
+        }
 
-        # Clean summary table
-        df = pd.DataFrame(
-            {
-                "Pilot Name": [PILOT_METADATA[k]["name"] for k in data.keys()],
-                "Average Score": [f"{v['mean']:.1f}" for v in data.values()],
-                "Result": [
-                    "Great landing (Fastest)" if k == "time" else
-                    "Great landing (Most stable)" if k == "fixed" else
-                    "Good landing" if k == "baseline" else
-                    "Cheated: floated forever and never landed"
-                    for k in data.keys()
-                ],
-            }
-        )
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        table_rows = ""
+        for k in ["time", "fixed", "baseline", "hover"]:
+            if k not in data:
+                continue
+            mean_val = data[k]["mean"]
+            p = PILOT_METADATA[k]
+            rule_text, behavior_text, name_col = rule_map.get(k, ("Custom Rule", "Outcome", p["color"]))
+            val_col = "#ef476f" if k == "hover" else "#06d6a0"
+            border_style = "border-bottom:1px solid rgba(138,79,255,0.2);" if k != "hover" else ""
+
+            table_rows += f"""
+            <tr style="{border_style}">
+              <td style="padding:0.85rem 1.4rem; font-weight:700; color:{name_col};">{p['emoji']} {p['name']}</td>
+              <td style="padding:0.85rem 1.4rem; color:#c7d2fe;">{rule_text}</td>
+              <td style="padding:0.85rem 1.4rem; font-weight:800; color:{val_col};">{mean_val:.1f}</td>
+              <td style="padding:0.85rem 1.4rem; color:{val_col if k == 'hover' else '#f8f9fa'};">{behavior_text}</td>
+            </tr>
+            """
+
+        render_html(f"""
+        <div style="max-width:1100px; margin:2rem auto 0; background:rgba(26,17,56,0.8); border:1.5px solid rgba(138,79,255,0.4); border-radius:16px; overflow:hidden;">
+          <table style="width:100%; border-collapse:collapse; text-align:left; font-size:1rem;">
+            <thead>
+              <tr style="background:rgba(40,25,80,0.9); border-bottom:1.5px solid rgba(138,79,255,0.4);">
+                <th style="padding:0.9rem 1.4rem; color:#ffd166; font-family:'Fredoka',sans-serif;">Pilot Name</th>
+                <th style="padding:0.9rem 1.4rem; color:#ffd166; font-family:'Fredoka',sans-serif;">Original Reward Rule</th>
+                <th style="padding:0.9rem 1.4rem; color:#ffd166; font-family:'Fredoka',sans-serif;">Average Score</th>
+                <th style="padding:0.9rem 1.4rem; color:#ffd166; font-family:'Fredoka',sans-serif;">Flight Behavior</th>
+              </tr>
+            </thead>
+            <tbody>
+              {table_rows}
+            </tbody>
+          </table>
+        </div>
+        """)
     else:
         st.info("Run `python src/export_results.py` to generate real scores.")
 

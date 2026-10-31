@@ -20,8 +20,8 @@ app_v2_backup.py
 st_out.log
 st_err.log
 
-# Video outputs
-videos/
+# Video outputs at root
+/videos/
 
 # Operating system files
 .DS_Store
